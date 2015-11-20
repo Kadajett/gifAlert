@@ -1,17 +1,15 @@
-var app = app || {};
-
-  app = (function(){
+(function() {
   var firebaseRef = new Firebase("https://gifalert.firebaseio.com/");
 
   firebaseRef.child("alerts").on("child_added", catchAlert);
 
-  function catchAlert(alert){
+  function catchAlert(alert) {
     var value = alert.val();
     console.log('Alert Caught: ', value);
     routeAlert(value);
   };
 
-  function routeAlert(alert){
+  function routeAlert(alert) {
     switch (alert) {
       case gifs.alertTitles.minecraft:
         gifs.execute.minecraft();
@@ -25,17 +23,17 @@ var app = app || {};
     }
   };
 
-  function injectScript(fileName){
+  function injectScript(fileName) {
     var s = document.createElement('script');
     // TODO: add "script.js" to web_accessible_resources in manifest.json
     s.src = chrome.extension.getURL(fileName);
     s.onload = function() {
-        this.parentNode.removeChild(this);
+      this.parentNode.removeChild(this);
     };
     (document.head || document.documentElement).appendChild(s);
   };
 
-  var gifs = (function(){
+  var gifs = (function() {
 
     var api = {
       execute: {
@@ -48,24 +46,15 @@ var app = app || {};
       }
     };
 
-    function executeMinecraft(){
+    function executeMinecraft() {
       injectScript('minecraft.js')
     };
 
-    function executeLeftShark(){
+    function executeLeftShark() {
       injectScript('leftShark.js')
     };
 
     var __api = this;
     return api;
   })();
-
-  document.getElementById('minecraft').addEventListener("click", function() {
-    firebaseRef.child("alerts").push(gifs.alertTitles.minecraft);
-  });
-
-  document.getElementById('leftShark').addEventListener("click", function() {
-    firebaseRef.child("alerts").push(gifs.alertTitles.leftShark);
-  });
-
 })();
